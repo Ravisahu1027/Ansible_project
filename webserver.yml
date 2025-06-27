@@ -1,0 +1,21 @@
+---
+- name: setup web server  # Name of the playbook
+  hosts: all              # Target all hosts in the inventory
+  become: true            # Run tasks with elevated (root) privileges
+
+  tasks:
+    - name: install apache  # Install Apache2 web server using apt package manager
+      ansible.builtin.apt:
+        name: apache2
+        state: present      # Ensure the package is installed
+
+    - name: start and enable apache2  # Start the Apache2 service and enable it to start on boot
+      ansible.builtin.systemd:
+        name: apache2
+        state: started
+        enabled: true
+
+    - name: copy index.html  # Copy a custom index.html file to the Apache web root
+      ansible.builtin.copy:
+        src: /home/ubuntu/index.html   # Source file on the Ansible controller
+        dest: /var/www/html/index.html # Destination on the target machine
